@@ -139,7 +139,7 @@ document.addEventListener('keydown', (event) => {
 
     case ' ':
         if(isOnTheGround()){
-            const impulse = new CANNON.Vec3(0, 500, 0);
+            const impulse = new CANNON.Vec3(0, 3500, 0);
             carBody.applyImpulse(impulse);
         }
         break;
