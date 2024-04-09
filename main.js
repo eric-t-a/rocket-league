@@ -11,11 +11,11 @@ import { createWorld } from './world';
 // part 0
 // set up Three.js scene with axis helper
 // ============
-const test = new SceneInit('myThreeJsCanvas');
-test.initialize();
-test.animate();
+const world = new SceneInit('myThreeJsCanvas');
+world.initialize();
+world.animate();
 const axesHelper = new THREE.AxesHelper(8);
-test.scene.add(axesHelper);
+world.scene.add(axesHelper);
 
 // ============
 // part 1
@@ -25,11 +25,11 @@ test.scene.add(axesHelper);
 
 // create a ground body with a static plane
 
-const physicsWorld = createWorld(test)
+const physicsWorld = createWorld(world)
 
 
 // add a green wireframe to each object and visualize the physics world
-const cannonDebugger = new CannonDebugger(test.scene, physicsWorld);
+const cannonDebugger = new CannonDebugger(world.scene, physicsWorld);
 
 
 // ============
@@ -210,37 +210,37 @@ document.addEventListener('keyup', (event) => {
 const boxGeometry = new THREE.BoxGeometry(8, 1, 4);
 const boxMaterial = new THREE.MeshNormalMaterial();
 const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-test.scene.add(boxMesh);
+world.scene.add(boxMesh);
 
 const sphereGeometry1 = new THREE.CylinderGeometry(1, 1);
 const sphereMaterial1 = new THREE.MeshNormalMaterial();
 const sphereMesh1 = new THREE.Mesh(sphereGeometry1, sphereMaterial1);
 
-test.scene.add(sphereMesh1);
+world.scene.add(sphereMesh1);
 
 const sphereGeometry2 = new THREE.CylinderGeometry(1);
 const sphereMaterial2 = new THREE.MeshNormalMaterial();
 const sphereMesh2 = new THREE.Mesh(sphereGeometry2, sphereMaterial2);
-test.scene.add(sphereMesh2);
+world.scene.add(sphereMesh2);
 
 const sphereGeometry3 = new THREE.CylinderGeometry(1);
 const sphereMaterial3 = new THREE.MeshNormalMaterial();
 const sphereMesh3 = new THREE.Mesh(sphereGeometry3, sphereMaterial3);
-test.scene.add(sphereMesh3);
+world.scene.add(sphereMesh3);
 
 const sphereGeometry4 = new THREE.CylinderGeometry(1);
 const sphereMaterial4 = new THREE.MeshNormalMaterial();
 const sphereMesh4 = new THREE.Mesh(sphereGeometry4, sphereMaterial4);
-test.scene.add(sphereMesh4);
+world.scene.add(sphereMesh4);
 
 sphereMesh1.geometry.rotateX(Math.PI/2);
 sphereMesh2.geometry.rotateX(Math.PI/2);
 sphereMesh3.geometry.rotateX(Math.PI/2);
 sphereMesh4.geometry.rotateX(Math.PI/2);
 
-test.camera.position.x = carBody.position.x + 20;
-test.camera.position.y = carBody.position.y + 20;
-test.camera.position.z = carBody.position.z + 0;
+world.camera.position.x = carBody.position.x + 20;
+world.camera.position.y = carBody.position.y + 20;
+world.camera.position.z = carBody.position.z + 0;
 
 var temp = new THREE.Vector3;
 
@@ -256,8 +256,8 @@ const animate = () => {
     boxMesh.quaternion.copy(carBody.quaternion);
 
     temp.setFromMatrixPosition(goal.matrixWorld)
-    test.camera.position.lerp(temp, 0.2);
-    test.camera.lookAt( boxMesh.position );
+    world.camera.position.lerp(temp, 0.2);
+    world.camera.lookAt( boxMesh.position );
     
     sphereMesh1.position.copy(wheelBody1.position);
     sphereMesh1.quaternion.copy(wheelBody1.quaternion);
