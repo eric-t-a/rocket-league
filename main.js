@@ -40,7 +40,7 @@ const cannonDebugger = new CannonDebugger(test.scene, physicsWorld);
 const carBody = new CANNON.Body({
     mass: 150,
     position: new CANNON.Vec3(0, 3, 0),
-    shape: new CANNON.Box(new CANNON.Vec3(4, 0.5, 2)),
+    shape: new CANNON.Box(new CANNON.Vec3(5, 0.5, 1.5)),
 });
 
 const vehicle = new CANNON.RigidVehicle({
@@ -67,7 +67,7 @@ wheels.push(wheelBody1);
 
 vehicle.addWheel({
     body: wheelBody1,
-    position: new CANNON.Vec3(-2.5, 0, axisWidth / 2),
+    position: new CANNON.Vec3(-2.5, 0, axisWidth / 2.5),
     axis: new CANNON.Vec3(0, 0, 1),
     direction: down,
 });
@@ -78,7 +78,7 @@ wheelBody2.angularDamping = 0.4;
 wheels.push(wheelBody2);
 vehicle.addWheel({
     body: wheelBody2,
-    position: new CANNON.Vec3(-2.5, 0, -axisWidth / 2),
+    position: new CANNON.Vec3(-2.5, 0, -axisWidth / 2.5),
     axis: new CANNON.Vec3(0, 0, 1),
     direction: down,
 });
@@ -89,7 +89,7 @@ wheelBody3.angularDamping = 0.4;
 wheels.push(wheelBody3);
 vehicle.addWheel({
     body: wheelBody3,
-    position: new CANNON.Vec3(2.5, 0, axisWidth / 2),
+    position: new CANNON.Vec3(2.5, 0, axisWidth / 2.5),
     axis: new CANNON.Vec3(0, 0, 1),
     direction: down,
 });
@@ -100,7 +100,7 @@ wheelBody4.angularDamping = 0.4;
 wheels.push(wheelBody4);
 vehicle.addWheel({
     body: wheelBody4,
-    position: new CANNON.Vec3(2.5, 0, -axisWidth / 2),
+    position: new CANNON.Vec3(2.5, 0, -axisWidth / 2.5),
     axis: new CANNON.Vec3(0, 0, 1),
     direction: down,
 });
@@ -250,7 +250,7 @@ goal.position.set(20, 10, 0);
 
 const animate = () => {
     physicsWorld.fixedStep();
-    cannonDebugger.update();
+    // cannonDebugger.update();
 
     boxMesh.position.copy(carBody.position);
     boxMesh.quaternion.copy(carBody.quaternion);
