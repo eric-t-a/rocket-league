@@ -169,7 +169,7 @@ function isOnTheGround(){
         })
     })
 
-    return wheelsOnGround == 4;
+    return wheelsOnGround > 2;
 }
 
 // reset car force to zero when key is released
@@ -238,12 +238,27 @@ sphereMesh2.geometry.rotateX(Math.PI/2);
 sphereMesh3.geometry.rotateX(Math.PI/2);
 sphereMesh4.geometry.rotateX(Math.PI/2);
 
+test.camera.position.x = carBody.position.x + 20;
+test.camera.position.y = carBody.position.y + 20;
+test.camera.position.z = carBody.position.z + 0;
+
+var temp = new THREE.Vector3;
+
+const goal = new THREE.Object3D;
+boxMesh.add(goal);
+goal.position.set(20, 10, 0);
+
 const animate = () => {
-    console.log(isOnTheGround())
     physicsWorld.fixedStep();
     cannonDebugger.update();
+
     boxMesh.position.copy(carBody.position);
     boxMesh.quaternion.copy(carBody.quaternion);
+
+    temp.setFromMatrixPosition(goal.matrixWorld)
+    test.camera.position.lerp(temp, 0.2);
+    test.camera.lookAt( boxMesh.position );
+    
     sphereMesh1.position.copy(wheelBody1.position);
     sphereMesh1.quaternion.copy(wheelBody1.quaternion);
 
