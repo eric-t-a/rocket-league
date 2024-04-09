@@ -38,7 +38,7 @@ const cannonDebugger = new CannonDebugger(test.scene, physicsWorld);
 // reference: https://github.com/pmndrs/cannon-es/blob/master/examples/rigid_vehicle.html
 // ============
 const carBody = new CANNON.Body({
-    mass: 5,
+    mass: 150,
     position: new CANNON.Vec3(0, 3, 0),
     shape: new CANNON.Box(new CANNON.Vec3(4, 0.5, 2)),
 });
@@ -115,14 +115,14 @@ document.addEventListener('keydown', (event) => {
     switch (event.key) {
     case 'w':
     case 'ArrowUp':
-        vehicle.setWheelForce(maxForce, 0);
-        vehicle.setWheelForce(maxForce, 1);
+        vehicle.setWheelForce(maxForce, 2);
+        vehicle.setWheelForce(maxForce, 3);
         break;
 
     case 's':
     case 'ArrowDown':
-        vehicle.setWheelForce(-maxForce / 2, 0);
-        vehicle.setWheelForce(-maxForce / 2, 1);
+        vehicle.setWheelForce(-maxForce, 2);
+        vehicle.setWheelForce(-maxForce, 3);
         break;
 
     case 'a':
@@ -177,14 +177,14 @@ document.addEventListener('keyup', (event) => {
     switch (event.key) {
     case 'w':
     case 'ArrowUp':
-        vehicle.setWheelForce(0, 0);
-        vehicle.setWheelForce(0, 1);
+        vehicle.setWheelForce(0, 2);
+        vehicle.setWheelForce(0, 3);
         break;
 
     case 's':
     case 'ArrowDown':
-        vehicle.setWheelForce(0, 0);
-        vehicle.setWheelForce(0, 1);
+        vehicle.setWheelForce(0, 2);
+        vehicle.setWheelForce(0, 3);
         break;
 
     case 'a':
