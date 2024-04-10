@@ -14,8 +14,8 @@ import { createWorld } from './world';
 const world = new SceneInit('myThreeJsCanvas');
 world.initialize();
 world.animate();
-const axesHelper = new THREE.AxesHelper(8);
-world.scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(8);
+// world.scene.add(axesHelper);
 
 // ============
 // part 1
@@ -25,7 +25,7 @@ world.scene.add(axesHelper);
 
 // create a ground body with a static plane
 
-const physicsWorld = createWorld(world)
+const {physicsWorld, light} = createWorld(world)
 
 
 // add a green wireframe to each object and visualize the physics world
@@ -210,27 +210,36 @@ document.addEventListener('keyup', (event) => {
 const boxGeometry = new THREE.BoxGeometry(8, 1, 4);
 const boxMaterial = new THREE.MeshNormalMaterial();
 const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+boxMesh.castShadow = true;
+boxMesh.receiveShadow = true;
 world.scene.add(boxMesh);
 
 const sphereGeometry1 = new THREE.CylinderGeometry(1, 1);
 const sphereMaterial1 = new THREE.MeshNormalMaterial();
 const sphereMesh1 = new THREE.Mesh(sphereGeometry1, sphereMaterial1);
-
+sphereMesh1.castShadow = true;
+sphereMesh1.receiveShadow = true;
 world.scene.add(sphereMesh1);
 
 const sphereGeometry2 = new THREE.CylinderGeometry(1);
 const sphereMaterial2 = new THREE.MeshNormalMaterial();
 const sphereMesh2 = new THREE.Mesh(sphereGeometry2, sphereMaterial2);
+sphereMesh2.castShadow = true;
+sphereMesh2.receiveShadow = true;
 world.scene.add(sphereMesh2);
 
 const sphereGeometry3 = new THREE.CylinderGeometry(1);
 const sphereMaterial3 = new THREE.MeshNormalMaterial();
 const sphereMesh3 = new THREE.Mesh(sphereGeometry3, sphereMaterial3);
+sphereMesh3.castShadow = true;
+sphereMesh3.receiveShadow = true;
 world.scene.add(sphereMesh3);
 
 const sphereGeometry4 = new THREE.CylinderGeometry(1);
 const sphereMaterial4 = new THREE.MeshNormalMaterial();
 const sphereMesh4 = new THREE.Mesh(sphereGeometry4, sphereMaterial4);
+sphereMesh4.castShadow = true;
+sphereMesh4.receiveShadow = true;
 world.scene.add(sphereMesh4);
 
 sphereMesh1.geometry.rotateX(Math.PI/2);
@@ -254,6 +263,7 @@ const animate = () => {
 
     boxMesh.position.copy(carBody.position);
     boxMesh.quaternion.copy(carBody.quaternion);
+    light.target.position.copy(carBody.position);
 
     temp.setFromMatrixPosition(goal.matrixWorld)
     world.camera.position.lerp(temp, 0.2);

@@ -11,6 +11,8 @@ import { threeToCannon, ShapeType } from 'three-to-cannon';
 
 function allCorners(cornerId, geometry, material, scene){
     const mesh = new THREE.Mesh( geometry, material );
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
     mesh.rotateY(cornerId ? 0 : Math.PI)
     mesh.rotateX(Math.PI)
     const x = cornerId == 0 ? - 150 : 150;
@@ -64,7 +66,31 @@ export const createWorld = (world) => {
 
     roundedCorners(world.scene, physicsWorld);
 
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    world.scene.add(ambientLight);
     
+    let light = new THREE.DirectionalLight(0xFFFFFF, 1);
+    light.castShadow = true;
+    light.position.set(0, 1000, 1000);
+    light.target.position.set(0, 0, 0);
+    light.shadow.camera.near = 0.001;
+    light.shadow.camera.far = 10000;
+    light.shadow.mapSize.set( 1024, 1024 );
+    light.shadow.camera.updateProjectionMatrix()
+
+    world.scene.add(light);
+    world.scene.add(light.target);
+    world.scene.add( new THREE.CameraHelper( light.shadow.camera ) );
+
+
+
+
+    const floor = new THREE.Mesh( new THREE.PlaneGeometry( 100, 100 ), new THREE.MeshPhongMaterial( { color: 0xcbcbcb, depthWrite: false } ) );
+    floor.rotation.x = - Math.PI / 2;
+    floor.receiveShadow = true;
+
+    world.scene.add( floor );
+
     const groundBody = new CANNON.Body({
         type: CANNON.Body.STATIC,
         // infinte geometric plane
@@ -75,5 +101,5 @@ export const createWorld = (world) => {
 
 
 
-    return physicsWorld
+    return {physicsWorld, light}
 }
