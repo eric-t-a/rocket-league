@@ -19,6 +19,7 @@ export default class Car {
         this.goal = new THREE.Object3D;
         this.wheels = [];
         this.physicsWheels = [];
+        this.pressedKeys = {};
 
     }
 
@@ -85,70 +86,70 @@ export default class Car {
 
     }
 
-    onKeyDown(event) {
+    updateCarForces(){
         const maxSteerVal = Math.PI / 8;
-        const maxForce = 1000;
+        let maxForce = 1000;
 
-        switch (event.key) {
-        case 'w':
-        case 'ArrowUp':
+        if('shift' in this.pressedKeys){
+            maxForce = 2000;
+        }
+
+        if('w' in this.pressedKeys){
             this.vehicle.setWheelForce(maxForce, 2);
             this.vehicle.setWheelForce(maxForce, 3);
-            break;
-
-        case 's':
-        case 'ArrowDown':
+        }
+        else if('s' in this.pressedKeys){
             this.vehicle.setWheelForce(-maxForce, 2);
             this.vehicle.setWheelForce(-maxForce, 3);
-            break;
+        }
+        else{
+            this.vehicle.setWheelForce(0, 2);
+            this.vehicle.setWheelForce(0, 3);
+        }
 
-        case 'a':
-        case 'ArrowLeft':
+        if('a' in this.pressedKeys){
             this.vehicle.setSteeringValue(maxSteerVal, 0);
             this.vehicle.setSteeringValue(maxSteerVal, 1);
-            break;
-
-        case 'd':
-        case 'ArrowRight':
+        }
+        else if('d' in this.pressedKeys){
             this.vehicle.setSteeringValue(-maxSteerVal, 0);
             this.vehicle.setSteeringValue(-maxSteerVal, 1);
-            break;
+        }
+        else{
+            this.vehicle.setSteeringValue(0, 0);
+            this.vehicle.setSteeringValue(0, 1);
+        }
 
-        case ' ':
+        if('d' in this.pressedKeys && 'a' in this.pressedKeys){
+            this.vehicle.setSteeringValue(0, 0);
+            this.vehicle.setSteeringValue(0, 1);
+        }
+
+        if('w' in this.pressedKeys && 's' in this.pressedKeys){
+            this.vehicle.setWheelForce(0, 2);
+            this.vehicle.setWheelForce(0, 3);
+        }
+    }
+
+    onKeyDown(event) {
+        if(!(event.key in this.pressedKeys)){
+            this.pressedKeys[event.key.toLowerCase()] = true;
+        }
+
+        if(event.key == ' '){
             if(this.isOnTheGround()){
                 const impulse = new CANNON.Vec3(0, 3500, 0);
                 this.carBody.applyImpulse(impulse);
             }
-            break;
         }
+
+        this.updateCarForces();
     }
 
     onKeyUp(event) {
-        switch (event.key) {
-            case 'w':
-            case 'ArrowUp':
-                this.vehicle.setWheelForce(0, 2);
-                this.vehicle.setWheelForce(0, 3);
-                break;
+        delete this.pressedKeys[event.key.toLowerCase()];
         
-            case 's':
-            case 'ArrowDown':
-                this.vehicle.setWheelForce(0, 2);
-                this.vehicle.setWheelForce(0, 3);
-                break;
-        
-            case 'a':
-            case 'ArrowLeft':
-                this.vehicle.setSteeringValue(0, 0);
-                this.vehicle.setSteeringValue(0, 1);
-                break;
-        
-            case 'd':
-            case 'ArrowRight':
-                this.vehicle.setSteeringValue(0, 0);
-                this.vehicle.setSteeringValue(0, 1);
-                break;
-        }
+        this.updateCarForces();
     }
 
     isOnTheGround(){
