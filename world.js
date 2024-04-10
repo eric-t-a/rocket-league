@@ -1,81 +1,69 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import CannonDebugger from 'cannon-es-debugger';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import dat from 'dat.gui'
 
 import SceneInit from './sceneInit';
 
 import { threeToCannon, ShapeType } from 'three-to-cannon';
 
 
-function planeCurve(g, z){
-	
-    let p = g.parameters;
-    let hw = p.width * 0.5;
-    
-    let a = new THREE.Vector2(-hw, 0);
-    let b = new THREE.Vector2(0, z);
-    let c = new THREE.Vector2(hw, 0);
-    
-    let ab = new THREE.Vector2().subVectors(a, b);
-    let bc = new THREE.Vector2().subVectors(b, c);
-    let ac = new THREE.Vector2().subVectors(a, c);
+function allCorners(cornerId, geometry, material, scene){
+    const mesh = new THREE.Mesh( geometry, material );
+    mesh.rotateY(cornerId ? 0 : Math.PI)
+    mesh.rotateX(Math.PI)
+    const x = cornerId == 0 ? - 150 : 150;
+    const z = cornerId == 0 ? -175 : 175;
+    mesh.position.y = 10;
+    mesh.position.x = x;
+    mesh.position.z = z;
 
-    let r = (ab.length() * bc.length() * ac.length()) / (2 * Math.abs(ab.cross(ac)));
     
-    let center = new THREE.Vector2(0, z - r);
-    let baseV = new THREE.Vector2().subVectors(a, center);
-    let baseAngle = baseV.angle() - (Math.PI * 0.5);
-    let arc = baseAngle * 2;
-    
-    let uv = g.attributes.uv;
-    let pos = g.attributes.position;
-    let mainV = new THREE.Vector2();
-    for (let i = 0; i < uv.count; i++){
-        let uvRatio = 1 - uv.getX(i);
-        let y = pos.getY(i);
-        if(arc * uvRatio > Math.PI / 2){
-            mainV.copy(c).rotateAround(center, Math.PI / 2);
-        }
-        else{
-            mainV.copy(c).rotateAround(center, (arc * uvRatio));
+    scene.add( mesh );
+    const result = threeToCannon(mesh, {type: ShapeType.MESH})
+    const {shape} = result;
 
-        }
-        pos.setXYZ(i, mainV.x - hw, y, -mainV.y);
-    }
-    
-    pos.needsUpdate = true;
-    
-}
-
-
-export const createWorld = (test) => {
-    const physicsWorld = new CANNON.World({
-        gravity: new CANNON.Vec3(0, -20, 0),
-    });
-
-
-    const length = 20;
-    let geom = new THREE.PlaneGeometry(length, 100, 200, 100);
-    planeCurve(geom, 5.773)
-    
-    geom.rotateX(- Math.PI / 2)
-    geom.rotateZ(- Math.PI / 3)
-    
-    let mat = new THREE.MeshBasicMaterial({
-        wireframe: true,
-    });
-    let o = new THREE.Mesh(geom, mat);
-    
-    test.scene.add(o);
-    const result = threeToCannon(o, {type: ShapeType.MESH});
-    const {shape, offset, orientation} = result;
-    
     const roundedGround = new CANNON.Body({
         type: CANNON.Body.STATIC,
         // infinte geometric plane
         shape: shape,
     });
-    physicsWorld.addBody(roundedGround);
+    roundedGround.quaternion.copy(mesh.quaternion);
+    roundedGround.position.copy(mesh.position);
+
+    return roundedGround
+}
+
+function roundedCorners(scene, physicsWorld){
+    var shape2 = new THREE.Shape()
+    shape2.arc(4, 0, 10, 0, Math.PI/ 2,  false)
+    shape2.arc(4, 0, 30, Math.PI / 2, 2* Math.PI , true)
+
+    var extrudeSettings = {
+      curveSegments:100,
+      depth: 350,
+      bevelEnabled: false,
+    }
+
+    const geometry = new THREE.ExtrudeGeometry(shape2, extrudeSettings)
+    const material = new THREE.MeshNormalMaterial();
+    for(let i = 0; i < 2; i++){
+        const roundedGround = allCorners(i, geometry, material, scene)
+
+        physicsWorld.addBody(roundedGround)
+    }
+
+}
+
+
+export const createWorld = (world) => {
+    const physicsWorld = new CANNON.World({
+        gravity: new CANNON.Vec3(0, -20, 0),
+    });
+
+    roundedCorners(world.scene, physicsWorld);
+
     
     const groundBody = new CANNON.Body({
         type: CANNON.Body.STATIC,
