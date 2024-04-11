@@ -5,7 +5,7 @@ import CannonDebugger from 'cannon-es-debugger';
 import SceneInit from './sceneInit';
 
 import { threeToCannon, ShapeType } from 'three-to-cannon';
-import { createWorld } from './world';
+import World from './world';
 import Car from './car';
 
 // ============
@@ -26,7 +26,9 @@ world.animate();
 
 // create a ground body with a static plane
 
-const {physicsWorld, light} = createWorld(world)
+const cannonWorld = new World(world);
+cannonWorld.initialize();
+const physicsWorld = cannonWorld.physicsWorld;
 
 
 // add a green wireframe to each object and visualize the physics world
@@ -50,7 +52,7 @@ const animate = () => {
     physicsWorld.fixedStep();
     cannonDebugger.update();
     car.animate();
-    light.target.position.copy(car.chassisBody.position);
+    cannonWorld.animateSunLight(car.chassisBody.position);
 
     
     window.requestAnimationFrame(animate);
