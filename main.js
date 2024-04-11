@@ -48,9 +48,9 @@ car.initialize()
 
 const animate = () => {
     physicsWorld.fixedStep();
-    // cannonDebugger.update();
+    cannonDebugger.update();
     car.animate();
-    light.target.position.copy(car.carBody.position);
+    light.target.position.copy(car.chassisBody.position);
 
     
     window.requestAnimationFrame(animate);

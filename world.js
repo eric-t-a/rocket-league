@@ -26,11 +26,8 @@ function allCorners(cornerId, geometry, material, scene){
     const result = threeToCannon(mesh, {type: ShapeType.MESH})
     const {shape} = result;
 
-    const roundedGround = new CANNON.Body({
-        type: CANNON.Body.STATIC,
-        // infinte geometric plane
-        shape: shape,
-    });
+    const roundedGround = new CANNON.Body();
+    roundedGround.addShape(shape)
     roundedGround.quaternion.copy(mesh.quaternion);
     roundedGround.position.copy(mesh.position);
 
@@ -58,10 +55,30 @@ function roundedCorners(scene, physicsWorld){
 
 }
 
+function createFloor(world, physicsWorld){
+    const floorMesh = new THREE.Mesh( 
+        new THREE.PlaneGeometry( 350, 350 ), 
+        new THREE.MeshToonMaterial( { color: 0x454545 } ) 
+    );
+    floorMesh.rotation.x = - Math.PI / 2;
+    floorMesh.receiveShadow = true;
+
+    world.scene.add( floorMesh );
+
+    const groundBody = new CANNON.Body();
+    groundBody.addShape(new CANNON.Plane());
+
+    groundBody.quaternion.setFromAxisAngle(
+        new CANNON.Vec3(-1, 0, 0),
+        Math.PI * 0.5
+    );
+    physicsWorld.addBody(groundBody);
+}
+
 
 export const createWorld = (world) => {
     const physicsWorld = new CANNON.World({
-        gravity: new CANNON.Vec3(0, -20, 0),
+        gravity: new CANNON.Vec3(0, -9.8, 0),
     });
 
     roundedCorners(world.scene, physicsWorld);
@@ -82,6 +99,7 @@ export const createWorld = (world) => {
     world.scene.add(light.target);
     world.scene.add( new THREE.CameraHelper( light.shadow.camera ) );
 
+    createFloor(world, physicsWorld)
 
 
 
@@ -98,7 +116,6 @@ export const createWorld = (world) => {
     });
     groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
     physicsWorld.addBody(groundBody);
-
 
 
     return {physicsWorld, light}
