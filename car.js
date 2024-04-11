@@ -54,7 +54,7 @@ export default class Car {
         this.wheels = [];
 
         for(let i = 0 ; i < 4 ; i++) {
-            const cylinderMesh = new THREE.Mesh(new THREE.CylinderGeometry(1, 1), new THREE.MeshNormalMaterial());
+            const cylinderMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.5), new THREE.MeshNormalMaterial());
             cylinderMesh.castShadow = true;
             cylinderMesh.receiveShadow = true;
 

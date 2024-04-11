@@ -35,8 +35,8 @@ export default class World {
 
     createCorners(){
         var shape = new THREE.Shape()
-        shape.arc(4, 0, 10, 0, Math.PI/ 2,  false)
-        shape.arc(4, 0, 30, Math.PI / 2, 2* Math.PI , true)
+        shape.arc(4, 0, 30, 0, Math.PI/ 2,  false)
+        shape.arc(4, 0, 100, Math.PI / 2, 2* Math.PI , true)
     
         var extrudeSettings = {
           curveSegments:100,
@@ -60,7 +60,7 @@ export default class World {
             mesh.rotateX(Math.PI)
             const x = cornerId == 0 ? - 150 : 150;
             const z = cornerId == 0 ? -175 : 175;
-            mesh.position.y = 10;
+            mesh.position.y = 30;
             mesh.position.x = x;
             mesh.position.z = z;
         
@@ -119,7 +119,6 @@ export default class World {
     
         this.world.scene.add(this.sunLight);
         this.world.scene.add(this.sunLight.target);
-        this.world.scene.add( new THREE.CameraHelper( this.sunLight.shadow.camera ) );
     }
 
     animateSunLight(position){
