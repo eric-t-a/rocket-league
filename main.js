@@ -27,9 +27,9 @@ car.initialize()
 
 const animate = () => {
     physicsWorld.fixedStep();
-    // cannonDebugger.update();
+    cannonDebugger.update();
     car.animate();
-    cannonWorld.animateSunLight(car.chassisBody.position);
+    cannonWorld.animateSunLight(car.carBody.position);
 
     
     window.requestAnimationFrame(animate);
